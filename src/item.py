@@ -1,5 +1,6 @@
-import csv
 import codecs
+import csv
+
 
 class Item:
     """
@@ -7,6 +8,7 @@ class Item:
     """
     pay_rate = 1.0
     all = []
+
 
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
@@ -22,9 +24,11 @@ class Item:
 
         Item.all.append(self)
 
+
     @property
     def name(self):
         return self.__name
+
 
     @name.setter
     def name(self, name):
@@ -32,6 +36,9 @@ class Item:
             self.__name = name
         else:
             self.__name = name[0:10]
+        Item.all.remove(self)
+        Item.all.append(self)
+
 
     def calculate_total_price(self) -> float:
         """
@@ -42,33 +49,38 @@ class Item:
         total_price = self.price * self.quantity
         return total_price
 
+
     def apply_discount(self) -> None:
         """
         Применяет установленную скидку для конкретного товара.
         """
         self.price = self.price * self.pay_rate
 
+
     @classmethod
     def instantiate_from_csv(cls, filename: str) -> None:
         '''инициализием экземпляры класса Item данными из файла src/items.csv'''
+        cls.all.clear() #очистка списка перед загрузкой данных из файла csv
+
         with codecs.open(filename,'r', encoding='utf-8', errors='replace') as f:
             reader = csv.DictReader(f)
+            items=[]
             for row in reader:
                 name = row['name']
-                price = cls.string_to_number(row['price'])
-                quantity = cls.string_to_number(row['quantity'])
+                price = float(row['price'])
+                quantity = int(row['quantity'])
                 item = cls(name, price, quantity)
+                items.append(item)
+
+            cls.all= items
+
 
     @staticmethod
-    def string_to_number(string: str) -> float:
-        if isinstance(string, str):
-            if '.' in string:
-                number = float(string)
-            else:
-                number = int(string)
-        else:
-            number = 0.0
-        return number
+    def string_to_number(str_number: str) -> int:
+        number = str_number.split('.')
+        return int(number[0])
+
+
 
 
 
