@@ -9,7 +9,6 @@ class Item:
     pay_rate = 1.0
     all = []
 
-
     def __init__(self, name: str, price: float, quantity: int) -> None:
         """
         Создание экземпляра класса item.
@@ -24,11 +23,9 @@ class Item:
 
         Item.all.append(self)
 
-
     @property
     def name(self):
         return self.__name
-
 
     @name.setter
     def name(self, name):
@@ -42,7 +39,6 @@ class Item:
     def __repr__(self):
         return f"{self.__class__.__name__}('{self.__name}', {self.price}, {self.quantity})"
 
-
     def __str__(self):
         return f"{self.__name}"
 
@@ -55,22 +51,20 @@ class Item:
         total_price = self.price * self.quantity
         return total_price
 
-
     def apply_discount(self) -> None:
         """
         Применяет установленную скидку для конкретного товара.
         """
         self.price = self.price * self.pay_rate
 
-
     @classmethod
     def instantiate_from_csv(cls, filename: str) -> None:
-        '''инициализием экземпляры класса Item данными из файла src/items.csv'''
-        cls.all.clear() #очистка списка перед загрузкой данных из файла csv
+        """инициализием экземпляры класса Item данными из файла src/items.csv"""
+        cls.all.clear()  # очистка списка перед загрузкой данных из файла csv
 
-        with codecs.open(filename,'r', encoding='utf-8', errors='replace') as f:
+        with codecs.open(filename, 'r', encoding='utf-8', errors='replace') as f:
             reader = csv.DictReader(f)
-            items=[]
+            items = []
             for row in reader:
                 name = row['name']
                 price = float(row['price'])
@@ -78,15 +72,9 @@ class Item:
                 item = cls(name, price, quantity)
                 items.append(item)
 
-            cls.all= items
-
+            cls.all = items
 
     @staticmethod
     def string_to_number(str_number: str) -> int:
         number = str_number.split('.')
         return int(number[0])
-
-
-
-
-
