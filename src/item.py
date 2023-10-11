@@ -40,7 +40,14 @@ class Item:
         return f"{self.__class__.__name__}('{self.__name}', {self.price}, {self.quantity})"
 
     def __str__(self):
-        return f"{self.__name}"
+        return self.__name
+
+    def __add__(self, other):
+        """ Сложение количества товаров из классов Item и Phone"""
+        if isinstance(other, Item):
+            return self.quantity + other.quantity
+        else:
+            raise TypeError("Складывать можно только объекты классов с родительским классом Item")
 
     def calculate_total_price(self) -> float:
         """
@@ -59,7 +66,7 @@ class Item:
 
     @classmethod
     def instantiate_from_csv(cls, filename: str) -> None:
-        """инициализием экземпляры класса Item данными из файла src/items.csv"""
+        """инициализируем экземпляры класса Item данными из файла src/items.csv"""
         cls.all.clear()  # очистка списка перед загрузкой данных из файла csv
 
         with codecs.open(filename, 'r', encoding='utf-8', errors='replace') as f:
