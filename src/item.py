@@ -62,17 +62,23 @@ class Item:
         """Инициализируем экземпляры класса Item данными из файла src/items.csv"""
         cls.all.clear()  # очистка списка перед загрузкой данных из файла csv
 
-        with codecs.open(filename, 'r', encoding='utf-8', errors='replace') as f:
-            reader = csv.DictReader(f)
-            items = []
-            for row in reader:
-                name = row['name']
-                price = float(row['price'])
-                quantity = int(row['quantity'])
-                item = cls(name, price, quantity)
-                items.append(item)
+        try:
+            with codecs.open(filename, 'r', encoding='utf-8', errors='replace') as f:
+                reader = csv.DictReader(f)
+                items = []
+                for row in reader:
+                    if 'name' not in row or 'price' not in row or 'quantity' not in row:
+                        raise InstantiateCSVError("Файл items.csv поврежден")
+                    name = row['name']
+                    price = float(row['price'])
+                    quantity = int(row['quantity'])
+                    item = cls(name, price, quantity)
+                    items.append(item)
 
-            cls.all = items
+                cls.all = items
+        except FileNotFoundError:
+            raise FileNotFoundError("Отсутствует файл items.csv")
+
 
     @staticmethod
     def string_to_number(str_number: str) -> int:
@@ -85,3 +91,8 @@ class Item:
             return self.quantity + other.quantity
         else:
             raise TypeError("Складывать можно только объекты классов с родительским классом Item")
+
+class InstantiateCSVError(Exception):
+    def __init__(self, message='Ошибка при открытии файла'):
+        self.message = message
+        super().__init__(self.message)
